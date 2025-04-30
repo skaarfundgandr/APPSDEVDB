@@ -5,7 +5,7 @@ CREATE VIEW view_purchaseHistory AS
 		kiosks.kioskID AS [Kiosk],
 		prod.productName AS [Product Name],
 		sales.amount AS [Amount],
-		sales.[date] AS [Date & Time]
+		sales.[date] AS [Date]
 	FROM salesDetails
 	JOIN kiosks ON salesDetails.kioskID = kiosks.kioskID
 	JOIN sales ON salesDetails.salesID = sales.salesID
@@ -29,7 +29,7 @@ CREATE VIEW view_restockHistory AS
 	SELECT
 		prod.productName AS [Product Name],
 		restock.amount AS [Amount],
-		restock.[dateTime] AS [Date & Time]
+		restock.[date] AS [Date]
 	FROM salesDetails
 	JOIN inventory AS inv ON salesDetails.inventoryID = inv.inventoryID
 	JOIN restockHistory AS restock ON restock.inventoryID = inv.inventoryID
