@@ -22,7 +22,7 @@ CREATE PROCEDURE [reseedAll] AS
 BEGIN
 	sp_msforeachtable @command1 = 'DBCC CHECKIDENT(''?'', RESEED, 0)'
 END;
-
+-- WARN: DESTRUCTIVE PROCEDURE USE WITH CAUTION!!
 CREATE PROCEDURE [RESET_TABLES] AS
 BEGIN
 	sp_msforeachtable @command1 = 'DELETE FROM ?'
@@ -102,7 +102,7 @@ BEGIN
 	END
 
 	BEGIN TRANSACTION restock_product
-		INSERT INTO restockHistory (inventoryID, amount, [dateTime])
+		INSERT INTO restockHistory (inventoryID, amount, [date])
 		VALUES
 		(@invID, @amount, GETDATE())
 
