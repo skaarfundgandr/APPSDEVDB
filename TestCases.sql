@@ -41,17 +41,17 @@ INSERT INTO sales (amount, [date]) VALUES
 (6, '2024-04-24');
 
 -- Insert restock history
-INSERT INTO restockHistory (inventoryID, amount, [dateTime]) VALUES
-(1, 50, '2024-04-10 09:30:00'),
-(2, 100, '2024-04-11 11:00:00'),
-(3, 30, '2024-04-12 10:15:00'),
-(4, 80, '2024-04-13 14:45:00'),
-(5, 60, '2024-04-14 16:20:00'),
-(6, 90, '2024-04-15 13:00:00'),
-(7, 40, '2024-04-16 15:30:00'),
-(8, 70, '2024-04-17 12:00:00'),
-(9, 65, '2024-04-18 17:10:00'),
-(10, 45, '2024-04-19 08:55:00');
+INSERT INTO restockHistory (inventoryID, amount, [date]) VALUES
+(1, 50, '2024-04-10'),
+(2, 100, '2024-04-11'),
+(3, 30, '2024-04-12'),
+(4, 80, '2024-04-13'),
+(5, 60, '2024-04-14'),
+(6, 90, '2024-04-15'),
+(7, 40, '2024-04-16'),
+(8, 70, '2024-04-17'),
+(9, 65, '2024-04-18'),
+(10, 45, '2024-04-19');
 
 -- Insert sales details linking kiosks, inventory, and sales
 INSERT INTO salesDetails (inventoryID, salesID, kioskID) VALUES
