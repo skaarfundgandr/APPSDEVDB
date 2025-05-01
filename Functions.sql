@@ -1,7 +1,9 @@
 BEGIN TRANSACTION creation_of_functions;
 
 CREATE FUNCTION getProductID
-@productName NVARCHAR(50)
+(
+    @productName NVARCHAR(50)
+)
 RETURNS BIGINT
 AS
 BEGIN
@@ -11,7 +13,6 @@ BEGIN
 
     IF @@RowCount > 1
     BEGIN
-        RAISERROR('Duplicate entries found!', 3, 2)
         RETURN NULL
     END
 
@@ -19,7 +20,9 @@ BEGIN
 END;
 
 CREATE FUNCTION getKioskID
-@username NVARCHAR(50)
+(
+    @username NVARCHAR(50)
+)
 RETURNS BIGINT
 AS
 BEGIN
@@ -29,7 +32,6 @@ BEGIN
 
     IF @@RowCount > 1
     BEGIN
-        RAISERROR('Duplicate entries found!', 3, 2)
         RETURN NULL
     END
 

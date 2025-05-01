@@ -1,3 +1,4 @@
+USE staging;
 BEGIN TRANSACTION [procedures];
 
 CREATE PROCEDURE [productPurchaseHistory]
@@ -20,12 +21,12 @@ END;
 
 CREATE PROCEDURE [reseedAll] AS
 BEGIN
-	sp_msforeachtable @command1 = 'DBCC CHECKIDENT(''?'', RESEED, 0)'
+	EXEC sp_msforeachtable @command1 = 'DBCC CHECKIDENT(''?'', RESEED, 0)'
 END;
 -- WARN: DESTRUCTIVE PROCEDURE USE WITH CAUTION!!
 CREATE PROCEDURE [RESET_TABLES] AS
 BEGIN
-	sp_msforeachtable @command1 = 'DELETE FROM ?'
+	EXEC sp_msforeachtable @command1 = 'DELETE FROM ?'
 END;
 
 CREATE PROCEDURE [purchaseProduct]
@@ -49,8 +50,8 @@ BEGIN
 		VALUES
 		(@amount, GETDATE())
 
-		@salesID = CAST(IDENT_CURRENT('sales') AS BIGINT)
-		@kioskID = getKioskID(@currUser)
+		SET @salesID = CAST(IDENT_CURRENT('sales') AS BIGINT)
+		SET @kioskID = dbo.getKioskID(@currUser)
 
 		IF @kioskID IS NULL
 		BEGIN
@@ -63,13 +64,13 @@ BEGIN
 		VALUES
 		(@invID, @salesID, @kioskID)
 
-		UPDATE inventory
+		UPDATE dbo.inventory
 		SET quantity -= @amount
-		WHERE inventoryID = @invID
+		WHERE inventoryID = @invID;
 
 		IF @@RowCount > 1
 		BEGIN
-			RAISERROR('Multiple rows updated rolling back changes...' 15, 1)
+			RAISERROR('Multiple rows updated rolling back changes...', 15, 1)
 			ROLLBACK
 			RETURN
 		END
@@ -87,7 +88,7 @@ BEGIN
 	FROM view_invProducts
 	WHERE [Product Name] = @productName
 
-	@productID = getProductID(@productName)
+	SET @productID = dbo.getProductID(@productName)
 
 	IF @productID IS NULL
 	BEGIN

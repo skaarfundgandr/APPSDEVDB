@@ -5,7 +5,7 @@ CREATE TABLE products (
 	productName NVARCHAR(50) NOT NULL,
 	productDesc NVARCHAR(50),
 	productCategory NVARCHAR(50) NOT NULL,
-	productPrice DECIMAL(10, 2) NOT NULL,
+	productPrice DECIMAL(18, 2) NOT NULL,
 	CONSTRAINT [CHK_PRODNAME] UNIQUE(productName),
 	CONSTRAINT [CHK_PRODPRICE] CHECK (productPrice >= 0)
 )

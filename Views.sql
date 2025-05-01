@@ -1,3 +1,4 @@
+USE staging;
 BEGIN TRANSACTION creation_of_views;
 
 CREATE VIEW view_purchaseHistory AS
@@ -14,7 +15,7 @@ CREATE VIEW view_purchaseHistory AS
 
 CREATE VIEW view_invProducts AS
 	SELECT
-		inv.inventoryID AS [Inventory ID]
+		inv.inventoryID AS [Inventory ID],
 		prod.productName AS [Product Name],
 		prod.productDesc AS [Description],
 		prod.productCategory AS [Category],
