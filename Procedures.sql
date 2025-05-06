@@ -1,5 +1,7 @@
 USE staging;
+GO
 BEGIN TRANSACTION [procedures];
+GO
 
 CREATE PROCEDURE [productPurchaseHistory]
 	@productName NVARCHAR(50)
@@ -9,6 +11,7 @@ BEGIN
 	FROM purchaseHistory
 	WHERE @productName = [Product Name]
 END;
+GO
 
 CREATE PROCEDURE [kioskPurchaseHistory]
 	@kioskID BIGINT
@@ -18,19 +21,22 @@ BEGIN
 	FROM view_purchaseHistory
 	WHERE @kioskID = Kiosk
 END;
+GO
 
 CREATE PROCEDURE [reseedAll] AS
 BEGIN
 	EXEC sp_msforeachtable @command1 = 'DBCC CHECKIDENT(''?'', RESEED, 0)'
 END;
+GO
 -- WARN: DESTRUCTIVE PROCEDURE USE WITH CAUTION!!
 CREATE PROCEDURE [RESET_TABLES] AS
 BEGIN
 	EXEC sp_msforeachtable @command1 = 'DELETE FROM ?'
 END;
+GO
 
 CREATE PROCEDURE [purchaseProduct]
-	@productName NVARCHAR(50)
+	@productName NVARCHAR(50),
 	@amount INT
 AS
 BEGIN
@@ -46,6 +52,7 @@ BEGIN
 	END
 
 	BEGIN TRANSACTION purchase_product
+		DECLARE @currUser BIGINT
 		INSERT INTO sales (amount, [date])
 		VALUES
 		(@amount, GETDATE())
@@ -67,8 +74,9 @@ BEGIN
 			ROLLBACK
 			RETURN
 		END
-	COMMIT
+	COMMIT TRANSACTION purchase_product
 END;
+GO
 
 CREATE PROCEDURE [restockProduct]
 	@productName NVARCHAR(50),
@@ -110,8 +118,9 @@ BEGIN
 			ROLLBACK
 			RETURN
 		END
-	COMMIT
+	COMMIT TRANSACTION restock_product
 END;
+GO
 
 CREATE PROCEDURE [addProductToInv]
 	@productName NVARCHAR(50)
@@ -129,14 +138,17 @@ BEGIN
 
 	BEGIN TRANSACTION addProduct
 	BEGIN TRY
-		INSERT INTO inventory (productID, quantity, [date])
+		INSERT INTO inventory (productID, quantity, latestRestock)
 		VALUES
 		(@prodID, 0, GETDATE())
 		COMMIT TRANSACTION addProduct
 	END TRY
 	BEGIN CATCH
-		RAISERROR('Error adding product to inventory')
+		RAISERROR('Error adding product to inventory', 10, 1)
 		ROLLBACK TRANSACTION addProduct
 	END CATCH
 END;
-	
+GO
+
+COMMIT TRANSACTION [procedures];
+GO
