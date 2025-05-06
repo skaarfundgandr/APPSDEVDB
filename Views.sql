@@ -1,5 +1,7 @@
 USE staging;
+GO;
 BEGIN TRANSACTION creation_of_views;
+GO;
 
 CREATE VIEW view_purchaseHistory AS
 	SELECT
@@ -12,6 +14,7 @@ CREATE VIEW view_purchaseHistory AS
 	JOIN sales ON salesDetails.salesID = sales.salesID
 	JOIN inventory AS inv ON salesDetails.inventoryID = inv.inventoryID
 	JOIN products AS prod ON inv.productID = prod.productID;
+GO;
 
 CREATE VIEW view_invProducts AS
 	SELECT
@@ -25,6 +28,7 @@ CREATE VIEW view_invProducts AS
 		inv.latestRestock AS [Last Restock]
 	FROM inventory AS inv
 	JOIN products AS prod ON inv.productID = prod.productID;
+GO;
 
 CREATE VIEW view_restockHistory AS
 	SELECT
@@ -35,5 +39,7 @@ CREATE VIEW view_restockHistory AS
 	JOIN inventory AS inv ON salesDetails.inventoryID = inv.inventoryID
 	JOIN restockHistory AS restock ON restock.inventoryID = inv.inventoryID
 	JOIN products AS prod ON inv.productID = prod.productID;
+GO;
 
-COMMIT;
+COMMIT TRANSACTION creation_of_views;
+GO;
