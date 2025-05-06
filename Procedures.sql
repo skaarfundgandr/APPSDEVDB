@@ -30,7 +30,7 @@ BEGIN
 END;
 
 CREATE PROCEDURE [purchaseProduct]
-	@productName NVARCHAR(50), @currUser NVARCHAR(50),
+	@productName NVARCHAR(50)
 	@amount INT
 AS
 BEGIN
@@ -52,13 +52,6 @@ BEGIN
 
 		SET @salesID = CAST(IDENT_CURRENT('sales') AS BIGINT)
 		SET @kioskID = dbo.getKioskID(@currUser)
-
-		IF @kioskID IS NULL
-		BEGIN
-			RAISERROR('Invalid username!', 10, 1)
-			ROLLBACK
-			RETURN
-		END
 
 		INSERT INTO salesDetails (inventoryID, salesID, kioskID)
 		VALUES
@@ -120,4 +113,30 @@ BEGIN
 	COMMIT
 END;
 
-COMMIT;
+CREATE PROCEDURE [addProductToInv]
+	@productName NVARCHAR(50)
+AS
+BEGIN
+	DECLARE @prodID BIGINT
+
+	SET @prodID = dbo.getProductID(@productName)
+
+	IF @prodID IS NULL
+	BEGIN
+		RAISERROR('product not found in inventory', 10, 1)
+		RETURN
+	END
+
+	BEGIN TRANSACTION addProduct
+	BEGIN TRY
+		INSERT INTO inventory (productID, quantity, [date])
+		VALUES
+		(@prodID, 0, GETDATE())
+		COMMIT TRANSACTION addProduct
+	END TRY
+	BEGIN CATCH
+		RAISERROR('Error adding product to inventory')
+		ROLLBACK TRANSACTION addProduct
+	END CATCH
+END;
+	
